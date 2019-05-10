@@ -8,6 +8,7 @@
     "start": "node dist/index.js",
     "summary": "node dist/index.js",
     "detail": "node dist/data-item-detail.js",
+    "test-detail": "node dist/test/puppeteer.test.js",
     "nodemon": "nodemon --nolazy --inspect=0.0.0.0:65535 dist/index.js",
     "build": "run-s ts-*",
     "ts-lint": "tslint -c tslint.json -p tsconfig.json --force",
