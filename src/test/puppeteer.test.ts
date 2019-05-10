@@ -23,8 +23,8 @@ const getGeoDataDetail = async (url, fname) => {
             height: 768,
         })
         await page.goto(url, {
-            // waitUntil: 'networkidle2',
-            // timeout: 120000
+            waitUntil: 'networkidle2',
+            timeout: 120000
         })
         // await page.pdf({
         //     format: 'A4',
@@ -42,7 +42,7 @@ const getGeoDataDetail = async (url, fname) => {
 }
 
 (async () => {
-    await getGeoDataDetail('https://sedac.ciesin.columbia.edu/data/set/superfund-atsdr-hazardous-waste-site-v2', 'test')
+    await getGeoDataDetail('https://www.eea.europa.eu/data-and-maps/data/global-land-cover-250m', 'test')
     console.log('finished!')
     process.exit(0)
 })()

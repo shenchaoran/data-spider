@@ -35,7 +35,8 @@ emitter.setMaxListeners(0);
         casearth,
         // gbif,
         sedac,
-        genesys,
+        // genesys,
+        fluxnet,
     ]
 
     await Bluebird.map(sites, site => {
@@ -59,7 +60,7 @@ emitter.setMaxListeners(0);
         ])
     })
     
-    return Bluebird.map(sites, site => site.updateAllDetail())
+    await Bluebird.map(sites, site => site.updateAllDetail())
     
     console.log('finished!')
     process.exit(0)

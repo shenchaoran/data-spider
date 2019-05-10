@@ -27,7 +27,7 @@ emitter.setMaxListeners(0);
     // await arcgisHub.start()
     // await fluxnet.start()
     // await genesys.start()
-    await gbif.start()
+    // await gbif.start()
     // await sedac.start()
     // await geoData.start()
     // await casearth.start()

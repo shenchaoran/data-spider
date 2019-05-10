@@ -11,6 +11,7 @@ export default class ArcGISHub extends DataSite {
     pageSize = 99
     pageNum
     dataItems = []
+    counter = 1
 
     source = 'ArcGIS Hub'
     sourceSite = 'https://hub.arcgis.com/search'
@@ -68,24 +69,37 @@ export default class ArcGISHub extends DataSite {
         }).then(res => {
             let docs = _.get(res, 'data')
             if(docs) {
-                console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
-                _.chain(docs)
-                    .map(item => {
-                        let OGMS_category
-                        let doc = item.attributes
-                        this.dataItems.push({
-                            label: _.get(doc, 'name'),
-                            url: [`https://hub.arcgis.com/datasets/${_.get(doc, 'slug')}`],
-                            description: _.get(doc, 'searchDescription'),
-                            original_category: _.get(doc, 'sector'),
-                            OGMS_category,
-                            source: this.source,
-                            sourceSite: this.sourceSite,
-                            tags: _.get(doc, 'tags'),
-                            owner: _.get(doc, 'owner'),
+                let fn = () => {
+                    console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
+                    _.chain(docs)
+                        .map(item => {
+                            let OGMS_category
+                            let doc = item.attributes
+                            this.dataItems.push({
+                                label: _.get(doc, 'name'),
+                                url: [`https://hub.arcgis.com/datasets/${_.get(doc, 'slug')}`],
+                                description: _.get(doc, 'searchDescription'),
+                                original_category: _.get(doc, 'sector'),
+                                OGMS_category,
+                                source: this.source,
+                                sourceSite: this.sourceSite,
+                                tags: _.get(doc, 'tags'),
+                                owner: _.get(doc, 'owner'),
+                            })
                         })
+                        .value()
+                }
+                if(this.counter%20 === 0) {
+                    return new Bluebird((resolve, reject) => {
+                        setTimeout(() => {
+                            fn()
+                            resolve()
+                        }, 20000);
                     })
-                    .value()
+                }
+                else {
+                    fn()
+                }
             }
         })
         .catch(e => {

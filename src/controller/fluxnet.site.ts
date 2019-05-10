@@ -4,6 +4,13 @@ import { DataSite } from './site.base'
 
 export default class Fluxnet extends DataSite {
     dataItems = []
+
+    source = 'Fluxnet'
+    sourceSite = 'https://fluxnet.fluxdata.org/'
+    updateDetailPageSize = 10
+    detailPageIgnoreDomains = []
+    timeout = 60000
+
     constructor() {
         super()
     }
@@ -13,8 +20,8 @@ export default class Fluxnet extends DataSite {
             label: `fluxsite: ${site.name}`,
             url: site.url,
             OGMS_category: [],
-            source: 'Fluxnet',
-            sourceSite: 'https://fluxnet.fluxdata.org/',
+            source: this.source,
+            sourceSite: this.sourceSite,
         }))
         return
     }
