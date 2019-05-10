@@ -9,7 +9,12 @@ const getGeoDataDetail = async (url, fname) => {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: setting.chromePath,
+            // executablePath: setting.chromePath,
+            // args: [
+            //     '--proxy-server=127.0.0.1:46425',
+            //     "--no-sandbox",
+            //     "--disable-setuid-sandbox",
+            // ],
         })
         const page = await browser.newPage()
         page.setRequestInterception(true)
@@ -20,6 +25,7 @@ const getGeoDataDetail = async (url, fname) => {
         page.on('request', request => {
             try {
                 const url = request.url()
+                console.log(url)
                 // if(request.resourceType() === 'xhr') {
                 //     // console.log(url)
                 // }
@@ -86,4 +92,5 @@ const getGeoDataDetail = async (url, fname) => {
 (async () => {
     await getGeoDataDetail('http://www.geodata.cn/data/datadetails.html?dataguid=2191439&docId=4352', 'test')
     console.log('finished!')
+    process.exit(0)
 })()

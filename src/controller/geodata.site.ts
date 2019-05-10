@@ -110,7 +110,12 @@ export default class GeoData extends DataSite {
                 fname = _.get(doc, '_id').toString();
             const browser = await puppeteer.launch({
                 headless: true,
-                executablePath: setting.chromePath,
+                // executablePath: setting.chromePath,
+                args: [
+                    // '--proxy-server=127.0.0.1:46425',
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                ],
             })
             const page = await browser.newPage()
             page.setRequestInterception(true)
@@ -124,7 +129,8 @@ export default class GeoData extends DataSite {
                     const ignoreDomains = [
                         'tianditu.gov',
                         'conac.cn',
-                        'baidu.com'
+                        'baidu.com',
+                        'data.ac',
                     ]
                     let ignore = false
                     _.map(ignoreDomains, domain => {
@@ -177,12 +183,13 @@ export default class GeoData extends DataSite {
             })
             await page.goto(url, {
                 waitUntil: 'networkidle2',
+                timeout: 12000,
             })
-            await page.pdf({
-                format: 'A4',
-                printBackground: true,
-                path: path.join(setting.pdf, `${fname}.pdf`)
-            })
+            // await page.pdf({
+            //     format: 'A4',
+            //     printBackground: true,
+            //     path: path.join(setting.pdf, `${fname}.pdf`)
+            // })
             await page.screenshot({
                 fullPage: true,
                 path: path.join(setting.img, `${fname}.jpg`)
@@ -201,7 +208,7 @@ export default class GeoData extends DataSite {
             _updateFlag: { $eq: null },
         }
         this.detailTotal = await DataItemModel.countDocuments(where)
-        const pageSize = 5
+        const pageSize = 100
         const pageNum = Math.ceil(this.detailTotal / pageSize)
         return Bluebird.mapSeries(new Array(pageNum).fill(1).map((v, i) => v + i), async pageIndex => {
             const { docs } = await DataItemModel.findByPages(

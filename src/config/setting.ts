@@ -8,5 +8,5 @@ export const setting = {
     },
     img: path.join(__dirname, '../data/img'),
     pdf: path.join(__dirname, '../data/pdf'),
-    chromePath: 'C:/Users/SCR/AppData/Local/Google/Chrome SxS/Application/chrome.exe',
+    chromePath: '/usr/bin/chromium-browser',
 }
