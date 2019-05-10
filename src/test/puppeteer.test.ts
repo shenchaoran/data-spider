@@ -9,7 +9,7 @@ const getGeoDataDetail = async (url, fname) => {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: 'C:/Users/SCR/AppData/Local/Google/Chrome SxS/Application/chrome.exe',
+            executablePath: setting.chromePath,
         })
         const page = await browser.newPage()
         page.setRequestInterception(true)
