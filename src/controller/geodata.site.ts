@@ -8,6 +8,9 @@ import * as puppeteer from 'puppeteer'
 import * as devices from 'puppeteer/DeviceDescriptors'
 import { setting } from '../config/setting'
 import * as path from 'path'
+const EventEmitter = require('events')
+let emitter = new EventEmitter()
+emitter.setMaxListeners(0);
 
 export default class GeoData extends DataSite {
     count = 23702

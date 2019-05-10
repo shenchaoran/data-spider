@@ -22,14 +22,6 @@ emitter.setMaxListeners(0);
     const geoData = new GeoData()
     const casearth = new CASEARTH()
     const eea = new EEA()
-
-    await esgf.start()
-    // await arcgisHub.start()
-    // await fluxnet.start()
-    // await genesys.start()
-    // await bgif.start()
-    // await sedac.start()
-    // await geoData.start()
-    // await casearth.start()
-    // await eea.start()
+    
+    await geoData.updateAllDetail()
 })()
