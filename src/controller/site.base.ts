@@ -63,7 +63,7 @@ export class DataSite {
                 headless: true,
                 // executablePath: setting.chromePath,
                 args: [
-                    '--proxy-server=127.0.0.1:1080',
+                    '--proxy-server=223.2.41.104:1080',
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
                 ],

@@ -10,6 +10,13 @@ export default class SEDAC extends DataSite {
     pageNum
     dataItems = []
     original_categories = ["agriculture", "climate", "conservation", "governance", "hazards", "health", "infrastructure", "land-use", "marine-and-coastal", "population", "poverty", "remote-sensing", "sustainability", "urban", "water"]
+    
+    source = 'SEDAC'
+    sourceSite = 'https://sedac.ciesin.columbia.edu/'
+    updateDetailPageSize = 10
+    detailPageIgnoreDomains = []
+    timeout = 60000
+    
     constructor() {
         super();
     }
@@ -61,12 +68,27 @@ export default class SEDAC extends DataSite {
                 const url = 'https://sedac.ciesin.columbia.edu' + $(item).find('h1 a').attr('href')
                 const description = $(item).find('.dataset-img-purpose p').text()
                 const original_category = category
-                const source = 'SEDAC'
-                const sourceSite = 'https://sedac.ciesin.columbia.edu/'
+                const source = this.source
+                const sourceSite = this.sourceSite
                 this.dataItems.push({
                     label, url, description, original_category, source, sourceSite
                 })
             })
+        })
+    }
+
+    protected async onDetailPageResponse(response: any, doc: any) {
+        const url = response.url()
+        // if(url.match(/sedac\.ciesin\.columbia\.edu\/data\/set/)) {
+        //     const res = await response.json()
+        //     const $ = cheerio.load(res)
+
+            
+        // }
+        return DataItemModel.updateOne({ _id: doc._id }, {
+            $set: {
+                _updateFlag: 'after-fetch-img',
+            }
         })
     }
 }

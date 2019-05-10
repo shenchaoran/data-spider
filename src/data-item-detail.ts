@@ -33,6 +33,8 @@ emitter.setMaxListeners(0);
         eea, 
         // arcgisHub,
         casearth,
+        // bgif,
+        sedac,
     ]
 
     await Bluebird.map(sites, site => {

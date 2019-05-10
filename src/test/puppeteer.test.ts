@@ -11,7 +11,7 @@ const getGeoDataDetail = async (url, fname) => {
             headless: false,
             // executablePath: setting.chromePath,
             args: [
-                // '--proxy-server=172.21.212.110:8023',
+                // '--proxy-server=223.2.41.104:1080',
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
             ],

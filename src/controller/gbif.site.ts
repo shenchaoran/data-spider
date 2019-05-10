@@ -13,7 +13,7 @@ export default class GBIF extends DataSite {
 
     source = 'GBIF'
     sourceSite = 'https://www.gbif.org'
-    updateDetailPageSize = 100
+    updateDetailPageSize = 10
     detailPageIgnoreDomains = []
     timeout = 60000
     
