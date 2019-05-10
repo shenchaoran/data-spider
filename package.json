@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "run-s build",
+    "start": "node dist/index.js",
     "nodemon": "nodemon --nolazy --inspect=0.0.0.0:65535 dist/index.js",
     "build": "run-s ts-*",
     "ts-lint": "tslint -c tslint.json -p tsconfig.json --force",
