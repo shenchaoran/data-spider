@@ -10,6 +10,13 @@ export default class Genesys extends DataSite {
     pageSize = 100
     pageNum
     dataItems = []
+
+    source = 'Genesys'
+    sourceSite = 'https://beta.genesys-pgr.org'
+    updateDetailPageSize = 20
+    detailPageIgnoreDomains = []
+    timeout = 60000
+
     constructor() {
         super()
         this.pageNum = Math.ceil(this.count/this.pageSize)
@@ -61,8 +68,8 @@ export default class Genesys extends DataSite {
                             description: _.get(item, 'description'),
                             original_category: _.get(item, 'sector'),
                             OGMS_category,
-                            source: 'Genesys',
-                            sourceSite: 'https://beta.genesys-pgr.org',
+                            source: this.source,
+                            sourceSite: this.sourceSite,
                             tags: _.get(item, 'crops'),
                             owner: _.get(item, 'owner.name'),
                         })

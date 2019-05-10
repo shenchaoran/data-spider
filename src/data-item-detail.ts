@@ -22,7 +22,7 @@ emitter.setMaxListeners(0);
     const arcgisHub = new ArcGISHub()
     const fluxnet = new Fluxnet()
     const genesys = new Genesys()
-    const bgif = new GBIF()
+    const gbif = new GBIF()
     const sedac = new SEDAC()
     const geoData = new GeoData()
     const casearth = new CASEARTH()
@@ -33,8 +33,9 @@ emitter.setMaxListeners(0);
         eea, 
         // arcgisHub,
         casearth,
-        // bgif,
+        // gbif,
         sedac,
+        genesys,
     ]
 
     await Bluebird.map(sites, site => {

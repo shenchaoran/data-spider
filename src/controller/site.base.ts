@@ -61,9 +61,9 @@ export class DataSite {
                 fname = _.get(doc, '_id').toString();
             const browser = await puppeteer.launch({
                 headless: true,
-                // executablePath: setting.chromePath,
+                executablePath: setting.chromePath,
                 args: [
-                    '--proxy-server=223.2.41.104:1080',
+                    // '--proxy-server=223.2.41.104:1080',
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
                 ],
