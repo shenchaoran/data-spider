@@ -10,6 +10,13 @@ export default class GBIF extends DataSite {
     pageSize = 1000
     pageNum
     dataItems = []
+
+    source = 'GBIF'
+    sourceSite = 'https://www.gbif.org'
+    updateDetailPageSize = 10
+    detailPageIgnoreDomains = []
+    timeout = 60000
+    
     constructor() {
         super()
         this.pageNum = Math.ceil(this.count/this.pageSize)
@@ -46,17 +53,16 @@ export default class GBIF extends DataSite {
             if(docs) {
                 console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
                 _.chain(docs)
-                    .map(item => {
+                    .map(doc => {
                         let OGMS_category
-                        let doc = item.attributes
                         this.dataItems.push({
                             label: _.get(doc, 'title'),
                             url: [`https://www.gbif.org/dataset/${_.get(doc, 'key')}`],
                             description: _.get(doc, 'description'),
                             original_category: _.get(doc, 'type'),
                             OGMS_category,
-                            source: 'GBIF',
-                            sourceSite: 'https://www.gbif.org',
+                            source: this.source,
+                            sourceSite: this.sourceSite,
                             tags: _.get(doc, 'keywords'),
                             owner: _.get(doc, 'publishingOrganizationTitle'),
                         })

@@ -1,6 +1,7 @@
 import * as requestAsync from 'request-promise'
 import * as Bluebird from 'bluebird'
 import * as _ from 'lodash'
+import * as cheerio from 'cheerio'
 import { DataItemModel } from '../models'
 import { USER_AGENTS } from './user-agent'
 import { DataSite } from './site.base'
@@ -10,6 +11,16 @@ export default class ArcGISHub extends DataSite {
     pageSize = 99
     pageNum
     dataItems = []
+
+    source = 'ArcGIS Hub'
+    sourceSite = 'https://hub.arcgis.com/search'
+    updateDetailPageSize = 50
+    detailPageIgnoreDomains = [
+        // 'arcgis.gis.lacounty.gov'
+    ]
+    networkidle = 'networkidle0'
+    timeout = 120000
+
     constructor() {
         super()
         // this.pageNum = Math.ceil(this.count/this.pageSize)
@@ -68,8 +79,8 @@ export default class ArcGISHub extends DataSite {
                             description: _.get(doc, 'searchDescription'),
                             original_category: _.get(doc, 'sector'),
                             OGMS_category,
-                            source: 'ArcGIS Hub',
-                            sourceSite: 'https://hub.arcgis.com/search',
+                            source: this.source,
+                            sourceSite: this.sourceSite,
                             tags: _.get(doc, 'tags'),
                             owner: _.get(doc, 'owner'),
                         })
@@ -80,5 +91,33 @@ export default class ArcGISHub extends DataSite {
         .catch(e => {
             console.log(`page num failed: ${pageNum}`)
         })
+    }
+
+    protected async onDetailPageResponse(response: any, doc: any) {
+        // const url = response.url()
+        // if (response.request().resourceType() === 'document') {
+        //     // console.log(url)
+        //     const res = await response.text()
+        //     const $ = cheerio.load(res)
+        //     _.map($('.documentByLine.category .link-category'), tagDom => {
+        //         if(!doc.tags) {
+        //             doc.tags = []
+        //         }
+        //         doc.tags.push($(tagDom).text())
+        //     })
+        //     _.map($('#themes-tags .link-category'), dom => {
+        //         if(!doc.original_category) {
+        //             doc.original_category = []
+        //         }
+        //         doc.original_category.push($(dom).text())
+        //     })
+        //     return DataItemModel.updateOne({ _id: doc._id }, {
+        //         $set: {
+        //             tags: doc.tags,
+        //             original_category: doc.original_category,
+        //             _updateFlag: 'after-fetch-pdf',
+        //         }
+        //     })
+        // }
     }
 }

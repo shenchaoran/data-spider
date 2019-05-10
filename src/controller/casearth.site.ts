@@ -11,10 +11,17 @@ export default class CASEARTH extends DataSite {
     pageNum
     dataItems = []
     counter = 1
+
+    source = '数据共享服务系统'
+    sourceSite = 'http://data.casearth.cn/'
+    updateDetailPageSize = 100
+    detailPageIgnoreDomains = []
+    timeout = 60000
+
     constructor() {
         super()
         this.pageNum = Math.ceil(this.count/this.pageSize)
-        console.log(`page count ${this.pageNum}`)
+        // console.log(`page count ${this.pageNum}`)
     }
 
     async getAllPages() {
@@ -72,8 +79,8 @@ export default class CASEARTH extends DataSite {
                                 description: _.get(item, 'desc'),
                                 original_category: _.get(item, 'disciplineName'),
                                 OGMS_category,
-                                source: '数据共享服务系统',
-                                sourceSite: 'http://data.casearth.cn/',
+                                source: this.source,
+                                sourceSite: this.sourceSite,
                                 tags: _.get(item, 'tags'),
                                 owner: _.get(item, 'publishDepartment'),
                             })
@@ -96,5 +103,17 @@ export default class CASEARTH extends DataSite {
         .catch(e => {
             console.log(`page num failed: ${pageNum}`)
         })
+    }
+
+    protected async onDetailPageResponse(response: any, doc: any) {
+        const url = response.url()
+        if (url.match(/data\.casearth\.cn\/sdo\/visitSdo\?id\=/)) {
+            const res = await response.json()
+            return DataItemModel.updateOne({ _id: doc._id }, {
+                $set: {
+                    _updateFlag: 'after-fetch-pdf',
+                }
+            })
+        }
     }
 }
