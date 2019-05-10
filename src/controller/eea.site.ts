@@ -10,6 +10,14 @@ export default class EEA extends DataSite {
     pageNum
     dataItems = []
     original_categories = ["soil", "energy", "human", "transport", "agriculture", "policy", "waste", "climate-change-adaptation", "water", "chemicals", "sustainability-transitions", "climate", "biodiversity", "industry", "air", "regions", "coast_sea", "landuse"]
+    
+    source = 'EEA'
+    sourceSite = 'http://www.geodata.cn'
+    updateDetailPageSize = 10
+    detailPageIgnoreDomains = [
+
+    ]
+
     constructor() {
         super();
     }
@@ -39,15 +47,43 @@ export default class EEA extends DataSite {
                 const url = $(item).find('.tileHeadline a').attr('href')
                 const description = $(item).find('.tileBody').text()
                 const original_category = category
-                const source = 'EEA'
-                const sourceSite = 'https://www.eea.europa.eu'
                 this.dataItems.push({
-                    label, url, description, original_category, source, sourceSite
+                    label, url, description, original_category, 
+                    source: this.source, 
+                    sourceSite: this.sourceSite,
                 })
             })
         })
         .catch(e => {
             console.log(`category failed: ${category}`)
         })
+    }
+
+    protected async onDetailPageResponse(response: any, doc: any) {
+        const url = response.url()
+        if (response.request().resourceType() === 'document') {
+            // console.log(url)
+            const res = await response.text()
+            const $ = cheerio.load(res)
+            _.map($('.documentByLine.category .link-category'), tagDom => {
+                if(!doc.tags) {
+                    doc.tags = []
+                }
+                doc.tags.push($(tagDom).text())
+            })
+            _.map($('#themes-tags .link-category'), dom => {
+                if(!doc.original_category) {
+                    doc.original_category = []
+                }
+                doc.original_category.push($(dom).text())
+            })
+            return DataItemModel.updateOne({ _id: doc._id }, {
+                $set: {
+                    tags: doc.tags,
+                    original_category: doc.original_category,
+                    _updateFlag: 'after-fetch-pdf',
+                }
+            })
+        }
     }
 }

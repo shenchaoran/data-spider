@@ -14,6 +14,7 @@ const schema = new Schema({
     sourceSite: String,
     tags: [String],
     owner: String,
+    schemaType: String,
     _updateFlag: String,
 }, { collection: collectionName });
 Object.assign(schema.statics, OgmsSchemaStatics)
@@ -32,5 +33,6 @@ export interface IDataItemDocument extends Document {
     sourceSite: String,
     tags: [String],
     owner: String,
+    schemaType: String,
     _updateFlag: String,
 }

@@ -5,11 +5,17 @@ import { DataItemModel } from '../models'
 import { USER_AGENTS } from './user-agent'
 import { DataSite } from './site.base'
 
-export default class ArcGISHub extends DataSite {
+export default class DSAC extends DataSite {
     count=225455
     pageSize = 99
     pageNum
     dataItems = []
+
+    source = '地理国情监测云平台'
+    sourceSite = 'http://www.dsac.cn/DataProduct'
+    updateDetailPageSize = 10
+    detailPageIgnoreDomains = []
+
     constructor() {
         super();
         // this.pageNum = Math.ceil(this.count/this.pageSize)
@@ -68,8 +74,8 @@ export default class ArcGISHub extends DataSite {
                             description: _.get(doc, 'searchDescription'),
                             original_category: _.get(doc, 'sector'),
                             OGMS_category,
-                            source: '地理国情监测云平台',
-                            sourceSite: 'http://www.dsac.cn/DataProduct',
+                            source: this.source,
+                            sourceSite: this.sourceSite,
                             tags: _.get(doc, 'tags'),
                             owner: _.get(doc, 'owner'),
                         })
@@ -80,5 +86,38 @@ export default class ArcGISHub extends DataSite {
         .catch(e => {
             console.log(`page num failed: ${pageNum}`)
         })
+    }
+
+    protected async onDetailPageResponse(response: any, doc: any) {
+        const url = response.url()
+        if (response.request().resourceType() === 'xhr') {
+            // console.log(url)
+            if (url.match(/\/entry\/\d+/)) {
+                const res = await response.json()
+                let description = [
+                    _.get(res, 'op_read.descDataSource'),
+                    _.get(res, 'op_read.descQuality'),
+                    _.get(res, 'op_read.description'),
+                ]
+                let tags = _.get(res, 'op_read.keywords')
+                return DataItemModel.updateOne({ _id: doc._id }, {
+                    $set: {
+                        description,
+                        tags,
+                        _updateFlag: 'after-fetch-pdf',
+                    }
+                })
+            }
+            else if (url.match(/\/withpublishers/)) {
+                const res = await response.json()
+                let original_category = res.op_read.map(v => v.categoryNamePath)
+                return DataItemModel.updateOne({ _id: doc._id }, {
+                    $set: {
+                        original_category,
+                        _updateFlag: 'after-fetch-pdf',
+                    }
+                })
+            }
+        }
     }
 }
