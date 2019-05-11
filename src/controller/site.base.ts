@@ -63,20 +63,26 @@ export class DataSite {
     protected async getItemDetail(doc: any): Promise<any> {
         let browser
         try {
+            const shouldContinue = await this.beforeVisitSite(doc)
+            if(!shouldContinue)
+                return
+
             let url = _.get(doc, 'url.0'),
                 fname = _.get(doc, '_id').toString();
             // console.log(`fetch img from ${url}`)
             browser = await puppeteer.launch({
                 headless: this.headless,
-                ignoreHTTPErrors: true,
-                // executablePath: setting.chromePath,
+                ignoreHTTPSErrors: true,
+                executablePath: setting.chromePath,
                 args: [
                     // '--proxy-server=223.2.41.104:1080',
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
                 ],
             })
-            const page = await browser.newPage()
+            // const page = await browser.newPage()
+            const pages = await browser.pages()
+            const page = pages[0]
             await page.setRequestInterception(true)
             page.setViewport({
                 width: 1376,
@@ -94,11 +100,11 @@ export class DataSite {
             
             await this.beforeGetItemDetail(page)
 
-            await page.pdf({
-                format: 'A4',
-                printBackground: true,
-                path: path.join(setting.pdf, `${this.constructor.name}/${fname}.pdf`)
-            })
+            // await page.pdf({
+            //     format: 'A4',
+            //     printBackground: true,
+            //     path: path.join(setting.pdf, `${this.constructor.name}/${fname}.pdf`)
+            // })
             await page.screenshot({
                 fullPage: true,
                 path: path.join(setting.img, `${this.constructor.name}/${fname}.jpg`)
@@ -110,7 +116,7 @@ export class DataSite {
             return Bluebird.resolve(null)
         }
         catch (e) {
-            console.error(e)
+            console.error(this.source, _.get(doc, 'url.0'), e)
             try {
                 browser.close()
             }
@@ -144,6 +150,10 @@ export class DataSite {
 
     protected async onDetailPageResponse(response: any, doc: any) {
         
+    }
+
+    protected async beforeVisitSite(doc: any): Promise<any> {
+        return true
     }
 
     protected async beforeGetItemDetail(page: any): Promise<any> {

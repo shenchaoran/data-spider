@@ -13,10 +13,11 @@ export default class GBIF extends DataSite {
 
     source = 'GBIF'
     sourceSite = 'https://www.gbif.org'
-    updateDetailPageSize = 10
+    updateDetailPageSize = 100
     detailPageIgnoreDomains = []
-    timeout = 60000
+    timeout = 120000
     networkidle = 'networkidle2';
+    // headless=false
     
     constructor() {
         super()
@@ -77,6 +78,9 @@ export default class GBIF extends DataSite {
     }
 
     protected async beforeGetItemDetail(page: any): Promise<any> {
-        return await page.waitForSelector('.horizontal-stripe.article-header h1')
+        await page.waitForSelector('.horizontal-stripe.article-header h1', {
+            timeout: this.timeout,
+        })
+        return 
     }
 }

@@ -5,15 +5,16 @@ import * as _ from 'lodash'
 
 const getGeoDataDetail = async (url, fname) => {
     try {
+        console.log('build in chromium path: ' + puppeteer.executablePath())
         const browser = await puppeteer.launch({
             headless: false,
             ignoreHTTPSErrors: true,
-            // executablePath: setting.chromePath,
+            executablePath: setting.chromePath,
             args: [
                 // '--proxy-server=172.21.212.110:1080',
-                '--ignore-certificate-errors',
-                '--ignore-certificate-errors-spki-list',
-                '--enable-features=NetworkService',
+                // '--ignore-certificate-errors',
+                // '--ignore-certificate-errors-spki-list',
+                // '--enable-features=NetworkService',
                 // '--proxy-server=223.2.41.104:1080',
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
@@ -34,7 +35,7 @@ const getGeoDataDetail = async (url, fname) => {
         })
         await page.goto(url, {
             waitUntil: 'networkidle2',
-            timeout: 30000
+            timeout: 60000
         })
         // await page.pdf({
         //     format: 'A4',
@@ -55,7 +56,7 @@ const getGeoDataDetail = async (url, fname) => {
 }
 
 (async () => {
-    await getGeoDataDetail('https://hub.arcgis.com/datasets/umich::map-flint-2017-sanilac-by-tract-acs5yr-population-unweighted-sample', 'test')
+    await getGeoDataDetail('https://www.gbif.org/dataset/68efc55e-f762-11e1-a439-00145eb45e9a', 'test')
     console.log('finished!')
     process.exit(0)
 })()

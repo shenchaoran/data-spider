@@ -13,9 +13,10 @@ export default class Genesys extends DataSite {
 
     source = 'Genesys'
     sourceSite = 'https://beta.genesys-pgr.org'
-    updateDetailPageSize = 20
+    updateDetailPageSize = 50
+    // headless=false
     detailPageIgnoreDomains = []
-    timeout = 60000
+    timeout = 240000
     networkidle = 'networkidle2';
 
     constructor() {
@@ -84,6 +85,9 @@ export default class Genesys extends DataSite {
     }
 
     protected async beforeGetItemDetail(page: any): Promise<any> {
-        return await page.waitForSelector('h3')
+        await page.waitForSelector('h3', {
+            timeout: this.timeout,
+        })
+        return 
     }
 }

@@ -15,13 +15,13 @@ export default class ArcGISHub extends DataSite {
 
     source = 'ArcGIS Hub'
     sourceSite = 'https://hub.arcgis.com/search'
-    updateDetailPageSize = 15
-    headless = true
+    updateDetailPageSize = 60
     detailPageIgnoreDomains = [
         // 'arcgis.gis.lacounty.gov'
     ]
     networkidle = 'networkidle2'
-    timeout = 60000
+    timeout = 240000
+    // headless=false
 
     constructor() {
         super()
@@ -109,8 +109,21 @@ export default class ArcGISHub extends DataSite {
         })
     }
 
+    protected async beforeVisitSite(doc: any): Promise<any> {
+        const url = _.get(doc, 'url.0')
+        if(url && url.indexOf('undefined') !== -1) {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
     protected async beforeGetItemDetail(page: any): Promise<any> {
-        return await page.waitForSelector('.container.skip-to h2')
+        await page.waitForSelector('.container.skip-to h2', {
+            timeout: this.timeout,
+        })
+        return 
     }
 
     // protected async onDetailPageResponse(response: any, doc: any) {
