@@ -7,6 +7,7 @@ import * as puppeteer from 'puppeteer'
 import * as devices from 'puppeteer/DeviceDescriptors'
 
 export class DataSite {
+    restart = true
     dataItems = []
     source;
     detailTotal;
@@ -24,7 +25,7 @@ export class DataSite {
     }
     
     async start() {
-        if(this.source) {
+        if(this.restart && this.source) {
             await DataItemModel.deleteMany({ source: this.source })
             console.log(`clear DB succeed: ${this.source}`)
         }
@@ -153,8 +154,10 @@ export class DataSite {
     }
 
     protected async beforeVisitSite(doc: any): Promise<any> {
-        return true
+        const url = _.get(doc, 'url.0')
+        return !!url
     }
+    
 
     protected async beforeGetItemDetail(page: any): Promise<any> {
         return true

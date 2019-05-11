@@ -16,6 +16,9 @@ const schema = new Schema({
     owner: String,
     schemaType: String,
     _updateFlag: String,
+    _pageNum: String,
+    _pageSize: String,
+    _sourceData: Schema.Types.Mixed,
 }, { collection: collectionName });
 Object.assign(schema.statics, OgmsSchemaStatics)
 interface IDataItemModel extends Model<IDataItemDocument>, IOgmsModel {}
@@ -35,4 +38,7 @@ export interface IDataItemDocument extends Document {
     owner: String,
     schemaType: String,
     _updateFlag: String,
+    _pageNum: String,
+    _pageSize: String,
+    _sourceData: any,
 }
