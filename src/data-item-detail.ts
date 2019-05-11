@@ -29,7 +29,7 @@ emitter.setMaxListeners(0);
     const arcgisHub = new ArcGISHub()
     const genesys = new Genesys()
     const gbif = new GBIF()
-    // const esgf = new ESGF()
+    const esgf = new ESGF()
     
     const sites = [
         // geoData, 
@@ -40,6 +40,7 @@ emitter.setMaxListeners(0);
         arcgisHub,
         gbif,
         genesys,
+        esgf,
     ]
 
     await Bluebird.map(sites, site => {

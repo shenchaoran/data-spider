@@ -12,10 +12,12 @@ export default class ESGF extends DataSite {
     pageNum
     dataItems = []
     counter = 1
+    
     source = 'ESGF'
     sourceSite = 'https://esgf-node.llnl.gov'
     updateDetailPageSize = 10
     timeout = 240000
+    // headless=false
     detailPageIgnoreDomains = []
     networkidle = 'networkidle2';
     original_categories = ["Agriculture", "Biomes", "Coastal Infrastructure", "Ecosystems", "Health", "Lakes Global", "Marine Ecosystems and Fisheries Global", "Marine Ecosystems and Fisheries Regional", "Permafrost", "Terrestrial Biodiversity", "Water", "Water Global", "Water Regional"]
