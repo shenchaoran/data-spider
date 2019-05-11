@@ -7,7 +7,7 @@ import { USER_AGENTS } from './user-agent'
 import { DataSite } from './site.base'
 
 export default class ArcGISHub extends DataSite {
-    count=225455
+    count=1946102
     pageSize = 99
     pageNum
     dataItems = []
@@ -15,12 +15,13 @@ export default class ArcGISHub extends DataSite {
 
     source = 'ArcGIS Hub'
     sourceSite = 'https://hub.arcgis.com/search'
-    updateDetailPageSize = 50
+    updateDetailPageSize = 15
+    headless = true
     detailPageIgnoreDomains = [
         // 'arcgis.gis.lacounty.gov'
     ]
-    networkidle = 'networkidle0'
-    timeout = 120000
+    networkidle = 'networkidle2'
+    timeout = 60000
 
     constructor() {
         super()
@@ -32,7 +33,7 @@ export default class ArcGISHub extends DataSite {
         return Bluebird.map(new Array(this.pageNum).fill(1).map((v,i) => i+v), i => {
             return this.getSinglePage(i)
         }, {
-            concurrency: 100
+            concurrency: 20
         })
     }
 
@@ -67,10 +68,11 @@ export default class ArcGISHub extends DataSite {
                 'User-Agent': user_agent,
             }
         }).then(res => {
+            console.log(`counter: ${this.counter++}, page num: ${pageNum}`)
             let docs = _.get(res, 'data')
             if(docs) {
                 let fn = () => {
-                    console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
+                    // console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
                     _.chain(docs)
                         .map(item => {
                             let OGMS_category
@@ -107,7 +109,12 @@ export default class ArcGISHub extends DataSite {
         })
     }
 
-    protected async onDetailPageResponse(response: any, doc: any) {
+    protected async beforeGetItemDetail(page: any): Promise<any> {
+        return await page.waitForSelector('.container.skip-to h2')
+    }
+
+    // protected async onDetailPageResponse(response: any, doc: any) {
+
         // const url = response.url()
         // if (response.request().resourceType() === 'document') {
         //     // console.log(url)
@@ -133,5 +140,5 @@ export default class ArcGISHub extends DataSite {
         //         }
         //     })
         // }
-    }
+    // }
 }

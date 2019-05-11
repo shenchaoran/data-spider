@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/index.js",
-    "summary": "node dist/index.js",
+    "start": "node dist/data-item-summary.js",
+    "summary": "node dist/data-item-summary.js",
     "detail": "node dist/data-item-detail.js",
     "test-detail": "node dist/test/puppeteer.test.js",
-    "nodemon": "nodemon --nolazy --inspect=0.0.0.0:65535 dist/index.js",
+    "nodemon": "nodemon --nolazy --inspect=0.0.0.0:65535 dist/data-item-summary.js",
     "build": "run-s ts-*",
     "ts-lint": "tslint -c tslint.json -p tsconfig.json --force",
     "ts-watch": "tsc -w"

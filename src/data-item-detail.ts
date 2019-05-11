@@ -12,31 +12,32 @@ import * as Bluebird from 'bluebird'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as cheerio from 'cheerio'
+import { DataItemModel } from './models'
 const mkdirp = require('mkdirp');
 const EventEmitter = require('events')
 let emitter = new EventEmitter()
 emitter.setMaxListeners(0);
 
 (async () => {
-    const esgf = new ESGF()
+    // const geoData = new GeoData()
+    // const sedac = new SEDAC()
+    // const fluxnet = new Fluxnet()
+    // const casearth = new CASEARTH()
+    // const eea = new EEA()
     const arcgisHub = new ArcGISHub()
-    const fluxnet = new Fluxnet()
     const genesys = new Genesys()
     const gbif = new GBIF()
-    const sedac = new SEDAC()
-    const geoData = new GeoData()
-    const casearth = new CASEARTH()
-    const eea = new EEA()
+    const esgf = new ESGF()
     
     const sites = [
-        geoData, 
-        eea, 
-        // arcgisHub,
-        casearth,
-        // gbif,
-        sedac,
-        // genesys,
-        fluxnet,
+        // geoData, 
+        // sedac,
+        // fluxnet,
+        // casearth,
+        // eea, 
+        arcgisHub,
+        gbif,
+        genesys,
     ]
 
     await Bluebird.map(sites, site => {

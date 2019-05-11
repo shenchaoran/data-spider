@@ -68,7 +68,7 @@ export default class CASEARTH extends DataSite {
         }).then(res => {
             let docs = _.get(res, 'list')
             if(docs) {
-                var fn = () => {
+                let fn = () => {
                     _.chain(docs)
                         .map(item => {
                             let OGMS_category

@@ -12,7 +12,7 @@ export default class EEA extends DataSite {
     original_categories = ["soil", "energy", "human", "transport", "agriculture", "policy", "waste", "climate-change-adaptation", "water", "chemicals", "sustainability-transitions", "climate", "biodiversity", "industry", "air", "regions", "coast_sea", "landuse"]
     
     source = 'EEA'
-    sourceSite = 'http://www.geodata.cn'
+    sourceSite = 'https://www.eea.europa.eu'
     updateDetailPageSize = 10
     detailPageIgnoreDomains = [
 

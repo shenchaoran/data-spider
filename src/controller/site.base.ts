@@ -14,7 +14,8 @@ export class DataSite {
     detailPageIgnoreDomains = [];
     detailCounter = 1;
     networkidle = 'networkidle2';
-    timeout = 12000
+    timeout = 60000
+    headless = true;
 
     async getAllPages(): Promise<any> {}
     
@@ -23,6 +24,10 @@ export class DataSite {
     }
     
     async start() {
+        if(this.source) {
+            await DataItemModel.deleteMany({ source: this.source })
+            console.log(`clear DB succeed: ${this.source}`)
+        }
         await this.getAllPages()
         await this.save2db()
         console.log('finished!')
@@ -56,12 +61,15 @@ export class DataSite {
     }
 
     protected async getItemDetail(doc: any): Promise<any> {
+        let browser
         try {
             let url = _.get(doc, 'url.0'),
                 fname = _.get(doc, '_id').toString();
-            const browser = await puppeteer.launch({
-                headless: true,
-                executablePath: setting.chromePath,
+            // console.log(`fetch img from ${url}`)
+            browser = await puppeteer.launch({
+                headless: this.headless,
+                ignoreHTTPErrors: true,
+                // executablePath: setting.chromePath,
                 args: [
                     // '--proxy-server=223.2.41.104:1080',
                     "--no-sandbox",
@@ -69,19 +77,23 @@ export class DataSite {
                 ],
             })
             const page = await browser.newPage()
-            page.setRequestInterception(true)
+            await page.setRequestInterception(true)
             page.setViewport({
                 width: 1376,
                 height: 768,
             })
             page.on('request', this.onDetailPageRequest)
-            page.on('response', response => {
+            page.on('response', async response => {
                 this.onDetailPageResponse(response, doc)
             })
+            
             await page.goto(url, {
                 waitUntil: this.networkidle,
                 timeout: this.timeout,
             })
+            
+            await this.beforeGetItemDetail(page)
+
             await page.pdf({
                 format: 'A4',
                 printBackground: true,
@@ -93,10 +105,16 @@ export class DataSite {
             })
             await browser.close();
             console.log(`site ${this.source}, page detail progress: ${this.detailCounter++}/${this.detailTotal}`)
+
+            await this.afterGetItemDetail(doc)
             return Bluebird.resolve(null)
         }
         catch (e) {
             console.error(e)
+            try {
+                browser.close()
+            }
+            catch(e) {}
             return Bluebird.resolve(null)
         }
     }
@@ -105,11 +123,13 @@ export class DataSite {
         try {
             const url = request.url()
             let ignore = false
-            _.map(this.detailPageIgnoreDomains, domain => {
-                if(url.indexOf(domain) !== -1) {
-                    ignore = true
-                }
-            })
+            if(this.detailPageIgnoreDomains && this.detailPageIgnoreDomains.length) {
+                _.map(this.detailPageIgnoreDomains, domain => {
+                    if(url.indexOf(domain) !== -1) {
+                        ignore = true
+                    }
+                })
+            }
             if(ignore) {
                 request.abort('aborted')
             }
@@ -123,10 +143,19 @@ export class DataSite {
     }
 
     protected async onDetailPageResponse(response: any, doc: any) {
+        
+    }
+
+    protected async beforeGetItemDetail(page: any): Promise<any> {
+        return true
+    }
+
+    protected async afterGetItemDetail(doc: any): Promise<any> {
         return DataItemModel.updateOne({ _id: doc._id }, {
             $set: {
                 _updateFlag: 'after-fetch-img',
             }
         })
     }
+
 }

@@ -7,7 +7,7 @@ import { USER_AGENTS } from './user-agent'
 
 export default class ESGF extends DataSite {
     count = 842785
-    pageSize = 2000
+    pageSize = 1000
     pageNum
     dataItems = []
     counter = 1
@@ -18,6 +18,7 @@ export default class ESGF extends DataSite {
 
     async getAllPages() {
         return Bluebird.map(new Array(this.pageNum).fill(0).map((v, i) => i), i => {
+            console.log(`counter: ${this.counter++}, page num: ${i}`)
             return this.getSinglePage(i)
         }, {
                 concurrency: 20
@@ -58,10 +59,10 @@ export default class ESGF extends DataSite {
                 'User-Agent': user_agent,
             }
         }).then(res => {
-            var fn = () => {
+            let fn = () => {
                 let docs = _.get(res, 'response.docs')
                 if (docs) {
-                    console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
+                    // console.log(`page num: ${pageNum}, response doc size: ${docs.length}`)
                     _.chain(docs)
                         .map(item => {
                             let OGMS_category

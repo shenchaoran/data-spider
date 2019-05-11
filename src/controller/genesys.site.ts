@@ -16,6 +16,7 @@ export default class Genesys extends DataSite {
     updateDetailPageSize = 20
     detailPageIgnoreDomains = []
     timeout = 60000
+    networkidle = 'networkidle2';
 
     constructor() {
         super()
@@ -80,5 +81,9 @@ export default class Genesys extends DataSite {
         .catch(e => {
             console.log(`page num failed: ${pageNum}`)
         })
+    }
+
+    protected async beforeGetItemDetail(page: any): Promise<any> {
+        return await page.waitForSelector('h3')
     }
 }

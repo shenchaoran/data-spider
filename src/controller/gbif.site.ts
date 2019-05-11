@@ -16,6 +16,7 @@ export default class GBIF extends DataSite {
     updateDetailPageSize = 10
     detailPageIgnoreDomains = []
     timeout = 60000
+    networkidle = 'networkidle2';
     
     constructor() {
         super()
@@ -73,5 +74,9 @@ export default class GBIF extends DataSite {
         .catch(e => {
             console.log(`page num failed: ${pageNum}`)
         })
+    }
+
+    protected async beforeGetItemDetail(page: any): Promise<any> {
+        return await page.waitForSelector('.horizontal-stripe.article-header h1')
     }
 }

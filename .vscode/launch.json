@@ -25,8 +25,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch get-list",
-            "program": "${workspaceFolder}/dist/index.js",
+            "name": "Launch get-summary",
+            "program": "${workspaceFolder}/dist/data-item-summary.js",
             // "preLaunchTask": "npm: build",
             "sourceMaps": true,
             "outFiles": [

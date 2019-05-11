@@ -8,6 +8,7 @@ import GeoData from './controller/geodata.site'
 import CASEARTH from './controller/casearth.site'
 import EEA from './controller/eea.site'
 import * as _ from 'lodash'
+import { DataItemModel } from './models'
 const EventEmitter = require('events')
 let emitter = new EventEmitter()
 emitter.setMaxListeners(0);
